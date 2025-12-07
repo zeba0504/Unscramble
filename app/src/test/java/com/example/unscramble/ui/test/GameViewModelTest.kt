@@ -3,6 +3,9 @@ package com.example.unscramble.ui.test
 import org.junit.Test
 import com.example.unscramble.ui.GameViewModel
 import com.example.unscramble.data.getUnscrambledWord
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import com.example.unscramble.data.SCORE_INCREASE
 
 
 class GameViewModelTest {
@@ -15,5 +18,13 @@ class GameViewModelTest {
 
         viewModel.updateUserGuess(correctPlayerWord)
         viewModel.checkUserGuess()
+
+        currentGameUiState = viewModel.uiState.value
+        assertFalse(currentGameUiState.isGuessedWordWrong)
+        assertEquals(20, currentGameUiState.score)
+        assertEquals(SCORE_AFTER_FIRST_CORRECT_ANSWER, currentGameUiState.score)
+    }
+    companion object {
+        private const val SCORE_AFTER_FIRST_CORRECT_ANSWER = SCORE_INCREASE
     }
 }
