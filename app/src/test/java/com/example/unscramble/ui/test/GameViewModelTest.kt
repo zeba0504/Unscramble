@@ -7,6 +7,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import com.example.unscramble.data.SCORE_INCREASE
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNotEquals
+import com.example.unscramble.data.MAX_NO_OF_WORDS
 
 
 class GameViewModelTest {
@@ -42,5 +44,35 @@ class GameViewModelTest {
         assertEquals(0, currentGameUiState.score)
         // Assert that checkUserGuess() method updates isGuessedWordWrong correctly
         assertTrue(currentGameUiState.isGuessedWordWrong)
+    }
+
+    @Test
+    fun gameViewModel_Initialization_FirstWordLoaded() {
+        val gameUiState = viewModel.uiState.value
+        val unScrambledWord = getUnscrambledWord(gameUiState.currentScrambledWord)
+
+        // Assert that current word is scrambled.
+        assertNotEquals(unScrambledWord, gameUiState.currentScrambledWord)
+        // Assert that current word count is set to 1.
+        assertTrue(gameUiState.currentWordCount == 1)
+        // Assert that initially the score is 0.
+        assertTrue(gameUiState.score == 0)
+        // Assert that the wrong word guessed is false.
+        assertFalse(gameUiState.isGuessedWordWrong)
+        // Assert that game is not over.
+        assertFalse(gameUiState.isGameOver)
+    }
+
+    @Test
+    fun gameViewModel_AllWordsGuessed_UiStateUpdatedCorrectly() {
+        var expectedScore = 0
+        var currentGameUiState = viewModel.uiState.value
+        var correctPlayerWord = getUnscrambledWord(currentGameUiState.currentScrambledWord)
+        repeat(MAX_NO_OF_WORDS) {
+            expectedScore += SCORE_INCREASE
+            viewModel.updateUserGuess(correctPlayerWord)
+            viewModel.checkUserGuess()
+
+        }
     }
 }
